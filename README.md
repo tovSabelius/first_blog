@@ -7,7 +7,6 @@
 # Инструкция
 
 Это мой первый проект на классическом (не DRF) джанго, направленный на ознакомление с веб-разработкой в целом, а также на формирование общего представления об этой области. Поэтому здесь пока не используются профессиональные и необходимые инструменты типа docker, postgres (вместо него db.sqlite3), nginx + gunicorn и т.д.
-
 ### 1. Клонируем репозиторий
 
 ```bash
@@ -25,12 +24,27 @@ uv sync
 uv run python manage.py makemigrations
 uv run python manage.py migrate
 ```
-### 4. Запускаем проект
+### 4. Генерируем SECRET_KEY и .env
+
+Вам нужен SECRET_KEY, сгенерируйте его:
+```bash
+uv run python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+
+Затем в корне проекта создайте файл .env
+```
+nano .env
+```
+и вставьте туда
+```
+SECRET_KEY=<то, что сгенерировала прошлая команда>
+```
+### 5. Запускаем проект
 
 ```bash
 uv run python manage.py runserver
 ```
-### 5. Что мы имеем
+### 6. Что мы имеем
 
 - Сайт – http://127.0.0.1:8000
 - Админка – http://127.0.0.1:8000/admin
