@@ -1,0 +1,49 @@
+{% extends 'articles/base.html' %}
+
+{% block site %}
+<h1 style="text-align: center;">{{ user.username }}</h1>
+
+<div class="user-data">
+    
+    <ul class="user-data__user-posts user-data__item">
+        <h3 style="margin: 0 0 20px 0; padding: 0;">Написанные посты</h3>
+        {% for note in notes %}
+        <li>
+            <a href="{{note.get_absolute_url}}">{{note.title}}</a>
+            <a href="{% url 'users:edit' note.id %}">📝</a>
+            <a href="{% url 'users:delete' note.id %}">❌</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+
+    <form action="" method="post" enctype="multipart/form-data" class="user-data__form user-data__item">
+        {% csrf_token %}
+
+        <h3 style="margin: 0 0 20px 0; padding: 0;">Твои данные</h3>
+        {{ form.non_field_errors }}
+        {% if user.avatar %}
+            <img src="{{user.avatar.url}}" alt="Нет изображения" width="100px" height="100px">
+        {% else %}
+            <img src="{{default_avatar}}" alt="" width="100px" height="100px">
+            <!-- static/images/2024/11/29/Dodge.jpg -->
+            
+        {% endif %}
+        {% for f in form %}
+        <div class="input" style="padding: 0; width: 100%;">
+            <label for="{{f.id_for_label}}">{{f.label}}</label>
+            {{f}}
+            <div class="form-error">{{ f.errors }}</div>
+        </div>
+        {% endfor %}
+        <button type="submit" class="flex-form__button user-data__button">Изменить</button>
+    </form>
+
+
+    <div class="user-data__info user-data__item">
+        <h3 style="margin: 0 0 20px 0; padding: 0;">Всякая другая фигня</h3>
+        <p>Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Ее составитель возвращайся раз, последний необходимыми строчка. Вскоре, послушавшись живет.</p>
+        <p>Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Ее составитель возвращайся раз, последний необходимыми строчка. Вскоре, послушавшись живет.</p>
+    </div>
+</div>
+{% endblock %}

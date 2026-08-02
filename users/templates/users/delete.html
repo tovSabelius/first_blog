@@ -1,0 +1,10 @@
+{% extends 'articles/base.html' %}
+
+{% block site %}
+<form action="" method="POST" class="main__del-form">
+    {% csrf_token %}
+    <button type="submit" name="del-button" class="main__user-del-button flex-form__button" style="margin-right: 20px;">Удалить пост?</button>
+    <a href="{% url 'users:profile' pk=user.id %}"><button type="button" class="main__user-del-button flex-form__button">Отмена</button></a>
+    <!-- Всегда указывай тип кнопки, иначе она не будет работать -->
+</form>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'articles/base.html' %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block site %}
+    <p align="center">{{ note.title }}</p>
+    <div class="content">
+        {% if note.photo %} <!-- Если фото существует (поле в таблице не равно 0) -->
+        <center><img src="{{ note.photo.url }}" alt="Фотография не загрзилась :-)"  class="main__user-image"></center>
+        {% endif %}
+        {{ note.text }}
+    </div>
+    <div class="note-inf">
+        <p>Автор: {{ note.author }}</p>
+        <p>Дата публикации: {{ note.date_publish }}</p>
+    </div>
+
+<div class="main__other-inf">
+    
+
+
+    {% with note.tags.all as related_tags %} <!-- Считываем связанные с текущей записью теги и помещаем их в переменную related_tags -->
+        {% if related_tags %}
+        <ul class="tag-list">
+            <li>Теги:</li>
+            {% for t in related_tags %}
+            <li><a href="{{ t.get_absolute_url }}">{{t.tagname}}</a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+    {% if liked %}
+    <form action="" method="post" style="display: inline-block;">
+        {% csrf_token %}
+        <button type="submit" class="main__other-inf__dislike-button main__like-dislike" name="like-button" value="{{note.id}}">Дизлайкнуть</button>
+        <!--
+        Мы указываем action, чтобы указать, какое представление будет обрабатывать post запрос, посланный из этой формы.
+
+        Мы указываем name кнопке, чтобы обращаться к ней в представлении. Мы это будем делать через
+        словарь request.POST.get('like-button'), в результате чего получаем значение
+        value, которое содержит эта кнопка, то есть id текущего поста, которое нужно нам, чтобы
+        проверить, какую форму мы обрабатываем (см. п. 2 в тексте про вьюхи).
+        -->
+    </form>
+
+    {% else %}
+    <form action="" method="post" style="display: inline-block;">
+        {% csrf_token %}
+        <button type="submit" class="main__other-inf__like-button main__like-dislike" name="like-button" value="{{note.id}}">Лайкнуть</button>
+    </form>
+    {% endif %}
+
+    {{likes}}
+
+    <div class="underline"></div>
+
+    <form action="" method="post" class="comm-form">
+        {% csrf_token %}
+        {% for f in form %}
+            <div class="input-comm">
+                <label for="{{ f.id_for_label }}">{{ f.label }}</label>
+                {{ f }}
+                <div class="form-error">{{ f.errors }}</div>
+            </div>
+        {% endfor %}
+        <button type="submit" class="flex-form__button send-comm">Отправить</button>
+    </form>
+    <br>
+
+    {% for comm in comments %}
+    <div class="user-comment">
+        <div class="head-comm">
+            <p>{{comm.author}}</p>
+            <p>{{comm.date_create}}</p>
+        </div>
+        <div class="underline"></div>
+        <div class="comm-text">{{comm.text}}</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+<!-- 
+Если обратиться к атрибуту url обекта ImageField модели, то можно получить
+url, по которому к этому объекту можно обратиться. Пока изображения не отображается,
+так как сервер не может связать url изображение с соответствующим ему файлом в каталоге.
+Чтобы исправить это, надо прописать перемен. MEDIA_URL в settings.py. Этот url будет
+добавляться в начало url медиафайла.
+Он нужен, чтобы в url.py прописать маршрут для доступа к медиафайлам и связать маршрут
+с каталогом ALL_FILES.
+-->

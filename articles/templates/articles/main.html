@@ -1,0 +1,23 @@
+{% extends 'articles/base.html' %}
+{% block site %}
+<div class="main__header">{{ title }}</div>
+    <div class="main__content">
+        
+            {% for note in notes %}
+            <div class="main__block">
+                <a href="{{ note.get_absolute_url }}" class="note_link"><p align="center">{{ note.title }}</p></a>
+                {{ note.text|truncatewords:27 }}
+            </div>
+            {% endfor %}
+
+        {% if cat_selected == None %}
+                {% for note in note_tags %}
+                <div class="main__block">
+                    <a href="{{ note.get_absolute_url }}" class="note_link"><p align="center">{{ note.title }}</p></a>
+                    {{ note.text|truncatewords:27 }}
+                </div>
+                {% endfor %}
+        {% endif %}
+</div>
+
+{% endblock %}

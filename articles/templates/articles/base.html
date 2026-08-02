@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block style %}
+    {% endblock %}
+    <link rel="stylesheet" href="{% static 'css/articles.css' %}">
+    <link rel="stylesheet" href="{% static 'users/users.css' %}">
+    <link rel="stylesheet" href="{% static 'users/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/note.css' %}">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div><a href="{% url 'send' %}" class="navbar-brand">Мой сайт</a></div>
+            
+            <ul class="user-act">
+                {% if not user.is_authenticated %}
+                <li><a href="{% url 'users:login' %}">Войти</a></li>
+                <li><a href="{% url 'users:register' %}">Зарегистрироваться</a></li>
+                {% else %}
+                <li><a href="{% url 'users:profile' pk=user.id %}">{{user.username}}</a></li>
+                {% endif %}
+            </ul>
+            <div class="sep"></div>
+            <div class="block-menu">
+                <ul class="menu">
+                    {% for i in menu %}
+                        <li><a href="#">{{ i }}</a></li>
+                    {% endfor %}
+
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'users:logout' %}">Выйти</a></li>
+                    {% endif %}
+                </ul>
+                <div class="have-fun"><a href="{% url 'create' %}">Написать</a></div>
+            </div>
+        </div>
+    </nav>
+    <div class="aside-main">
+        <aside class="sidebar">
+            <div class="head">
+                <img src="{% static 'images/parrot.png' %}">
+                {% if cat_selected == 0 %}
+                <div class="comment" style="color: rgb(64, 244, 88);">Все Категории</div>
+                {% else %}
+                <div class="comment"><a href="{% url 'main' %}" class="all-url">Все Категории</a></div>
+                {% endif %}
+            </div>
+            <div class="all-content">
+                <ul class="rubrics">
+                    {% for cat in all_cats %}
+                        {% if cat_selected == cat.id %} <!-- Если идентификатор выбранной категории равен идентификатору текущей категории (т.е. если мы выбрали категорию) -->
+                        <li style="color: rgb(64, 244, 88);">{{ cat.cat_name }}</li> <!-- То она отображается как текст -->
+                        {% else %}
+                        <li><a href="{{ cat.get_absolute_url }}">{{ cat.cat_name }}</a></li> <!-- Иначе как ссылка на другую категорию -->
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+                <div class="contact-us">Свяжись с нами</div>
+            </div>
+        <br>
+        {% if all_tags %}
+        <ul class="tags">
+            {% for t in all_tags %}
+            <li><a href="{{ t.get_absolute_url }}">{{ t.tagname }}</a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        </aside>
+        <main class="main">
+            <form action="" method="get" style="width: 100%; display: flex; justify-content: center; padding-top: 30px;">
+                {% for f in search_form %}
+                <!-- <p align="center">{{f}}</p> -->
+                 {{f}}
+                {% endfor %}
+            </form>
+            {% block site %}
+            {% endblock %}
+        </main>
+    </div>
+    <footer class="footer">
+        <p align="center">За полное или частичное копирование содержимого сайта будете иметь дело со мной!!!&copy;</p>
+        <div class="footer__inf">
+            <ul class="footer__l1 footer__lst">
+                <li><a href="#">Информация</a></li>
+                <li><a href="#">Информация</a></li>
+                <li><a href="#">Информация</a></li>
+            </ul>
+            <ul class="footer__l2 footer__lst">
+                <li><a href="#">Информация</a></li>
+                <li><a href="#">Информация</a></li>
+                <li><a href="#">Информация</a></li>
+            </ul>
+            <ul class="footer__l2 footer__lst">
+                <li><a href="#">Информация</a></li>
+                <li><a href="#">Информация</a></li>
+                <li><a href="#">Информация</a></li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>
